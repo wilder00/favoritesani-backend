@@ -1,28 +1,43 @@
 
 const { marcador } = require('../../models')
+const { gql } = require('graphql-tag')
 
-
-const marcadorTypes = `
+const typeDefs = gql`
   type Marcador {
-    id: Int
+    id: ID
     nombre: String
     marcador_padre: Int
   },
 
   extend type Query {
-      #marcador(id: Int!): Marcador
-      marcadores: [Marcador]
+    marcador(id: ID!): Marcador
+    marcadores: [Marcador]
+  }
+
+  extend type Mutation{
+    crearMarcador( name: String ): String
   }
 `
 
 
-const marcadorResolvers = {
-  marcadores : async()=>{
-    return await marcador.getAll()
+const resolver = {
+  Query:{
+    marcador : async ( _ , { id } )=>{
+      return await marcador.findById(id)
+    },
+    marcadores : async()=>{
+      return await marcador.getAll()
+    }
+  },
+  Mutation:{
+    // (parent, args))
+    crearMarcador:(_, {name})=>{
+      return name
+    }
   }
 }
 
 module.exports = {
-  marcadorTypes,
-  marcadorResolvers
+  typeDefs,
+  resolver
 }

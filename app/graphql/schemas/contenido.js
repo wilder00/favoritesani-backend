@@ -1,8 +1,8 @@
 
 const { contenido } = require('../../models')
+const { gql } = require('graphql-tag')
 
-
-const contenidoTypes = `
+const contenidoTypes = gql`
   type Contenido {
     id: Int
     nombre: String
