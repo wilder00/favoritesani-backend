@@ -6,23 +6,29 @@ const {
   DB_NAME: dbName,
   DB_PASSWORD: dbPassword,
 } = process.env
-const connection = mysql.createConnection({
+
+const connectionConfig = {
   host     : dbHost,
   port     : dbPort,
   user     : dbUser,
   database : dbName,
   password : dbPassword,
-});
-// const dbPassword = process.env.DB_PASSWORD
-connection.connect(function(err) {
-  if (err) {
-    console.error('error connecting Mysql: ' + err.stack);
-    return;
-  }
+}
 
-  console.log('connected Mysql as id ' + connection.threadId);
-});
+const connection = mysql.createConnection(connectionConfig);
+
+const execute = (query, values)=>{
+  return new Promise((resolve, reject)=>{
+    
+    connection.execute(query, values, (error,results, fields)=>{
+        if(error) reject(error);
+        resolve({results, fields})
+      }
+    );
+  })
+}
+
 
 module.exports = {
-  connection
+  execute
 }
