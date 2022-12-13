@@ -15,7 +15,10 @@ const typeDefs = gql`
   }
 
   extend type Mutation{
-    crearMarcador( name: String ): String
+    crearMarcador( 
+      nombre: String,
+      marcador_padre: Int
+    ): Marcador
   }
 `
 
@@ -31,8 +34,15 @@ const resolver = {
   },
   Mutation:{
     // (parent, args))
-    crearMarcador:(_, {name})=>{
-      return name
+    crearMarcador: async (_, {nombre, marcador_padre})=>{
+      const newMarcadorId = await marcador.createOne({
+        nombre,
+        marcador_padre,
+      })
+
+      const newMarcador = await marcador.findById(newMarcadorId)
+
+      return newMarcador
     }
   }
 }

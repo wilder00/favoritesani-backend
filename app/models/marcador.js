@@ -10,9 +10,9 @@ const definition = {
   ]
 }
 
-
+/* SQL TEMPLATE LITERAL danedavid.vscode-sql-template-literal-comment */
 const getAll = async () => {
-  const query = `
+  const query = `/* SQL */
     SELECT * from marcadores
   `
   try {
@@ -24,8 +24,8 @@ const getAll = async () => {
   }
 }
 
-const findById = async (id) => {
-  const query = `
+const findById = async ( id ) => {
+  const query = `/* SQL */
     SELECT * from marcadores
     where id = ?
   `
@@ -38,9 +38,30 @@ const findById = async (id) => {
   }
 }
 
+const createOne = async ( marcador )=>{
+  const {
+    nombre,
+    marcador_padre
+  } = marcador 
+  const values = [nombre, marcador_padre]
+  const query = `/* SQL */
+    INSERT INTO marcadores ( nombre, marcador_padre) 
+    VALUES ( ?, ? );
+  `
+  try {
+    const dbResponse = await db.execute(query, values)
+    console.log(dbResponse);
+    return dbResponse.results.insertId || null
+  } catch (error) {
+    console.error(error);
+    throw error
+  }
+
+}
 
 module.exports = {
   definition,
   getAll,
   findById,
+  createOne
 }
